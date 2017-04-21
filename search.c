@@ -16,6 +16,25 @@
  * @return  Whether or not the search was successful.
  */
 int	    search(const char *root, const Settings *settings) {
+    DIR * dir = opendir(root);
+    struct dirent * read;
+    int numberFiles = 0;
+    char * path = NULL;
+    if (dir == NULL) { // cant open
+        perror("opendir() error");
+        return EXIT_FAILURE;
+    }
+    while ((read = readdir(dir)) != NULL){
+        numberFiles++;
+        sprintf(path, "%s/%s", root, read->d_name); 
+        if (numberFiles <= 2) continue; // skip first two ('.' '..')
+        if (!filter(path, settings)) { // include
+            execute(path, settings);
+            if (read->d_type == DT_DIR)
+                search(path, settings);
+            return EXIT_SUCCESS;
+        }
+    }
     return EXIT_SUCCESS;
 }
 

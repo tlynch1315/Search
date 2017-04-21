@@ -4,7 +4,8 @@ Project 01 - README
 Members
 -------
 
-- Domer McDomerson (dmcdomer@nd.edu)
+- Will Fritz (wfritz@nd.edu)
+- Tommy Lynch (tlynch2)
 
 Responses
 ---------
