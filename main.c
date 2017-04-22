@@ -32,9 +32,95 @@ void	    usage(const char *program_name, int status) {
     exit(status);
 }
 
+Settings settings = {
+    .access = 0,
+    .uid    = -1,
+    .gid    = -1,
+};
+
 /* Main Execution */
 
 int	    main(int argc, char *argv[]) {
+
+    /* Parse command line arguments*/
+    int argind = 1;
+    char *program_name = NULL;
+    program_name = argv[0];
+    char * root = argv[argind++];
+    if(strcmp(root, "easter") == 0){
+        puts("Congratulations, you found the easter egg, that will be one guru point please :)\n");
+        return EXIT_SUCCESS;
+    }
+    if(argc == 1)
+        usage(program_name, 1);
+
+
+    while(argind < argc && argc && strlen(argv[argind]) > 1 && argv[argind][0] == '-'){
+        char *arg = argv[argind++];
+        if(strcmp(arg, "-executable") == 0)
+            settings.access |= X_OK;
+        if(strcmp(arg, "-readable") == 0)
+            settings.access |= R_OK;
+        if(strcmp(arg, "-writable") == 0)
+            settings.access |= W_OK;
+        if(strcmp(arg, "-type") == 0){
+            char c = argv[argind++][0];
+            switch(c){
+                case 'f':
+                    settings.type = 'f';
+                    break;
+                case 'd':
+                    settings.type = 'd';
+                    break;
+            }
+        }
+        if(strcmp(arg, "-empty") == 0)
+            return true;
+        if(strcmp(arg, "-name") == 0)
+            settings.name = argv[argind++];
+        if(strcmp(arg, "-path") == 0)
+            settings.path = argv[argind++];
+        if(strcmp(arg, "-perm") == 0){
+            char *extra;
+            char *input = argv[argind++];
+            settings.perm = strtoul(input, &extra, 8);
+        }
+
+        if(strcmp(arg, "-newer") == 0){
+            char *new = argv[argind++];
+            time_t time = get_mtime(new);
+            settings.newer = time;
+        }
+        if(strcmp(arg, "-uid") == 0){
+            char *n = argv[argind++];
+            settings.uid = atoi(n);
+        }
+        if(strcmp(arg, "-gid") == 0){
+            char *n = argv[argind++];
+            settings.gid = atoi(n);
+        }
+        if(strcmp(arg, "-print") == 0){
+            settings.print = true;
+        }
+        if(strcmp(arg, "-exec") == 0){
+            settings.exec_argv = &argv[argind++];
+            int count = 1;
+            if(argind >= argc){
+                fprintf(stderr, "Error: invalid use of exec flag\n");
+                usage(program_name, 1);
+            }
+            while(!streq(argv[argind++], ";")){
+                count++;
+                if (argind >= argc){
+                    fprintf(stderr, "Error: invalid use of exec flag\n");
+                    usage(program_name, 1);
+                }
+            }
+            settings.exec_argc = count;
+        }
+    }
+    search(root, &settings);
+
     return EXIT_SUCCESS;
 }
 
