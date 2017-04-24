@@ -47,13 +47,12 @@ int	    main(int argc, char *argv[]) {
     char *program_name = NULL;
     program_name = argv[0];
     char * root = argv[argind++];
+    if(argc == 1)
+        usage(program_name, 1);
     if(strcmp(root, "easter") == 0){
         puts("Congratulations, you found the easter egg, that will be one guru point please :)\n");
         return EXIT_SUCCESS;
     }
-    if(argc == 1)
-        usage(program_name, 1);
-
 
     while(argind < argc  && strlen(argv[argind]) > 1 && argv[argind][0] == '-'){
         char *arg = argv[argind++];
@@ -65,14 +64,7 @@ int	    main(int argc, char *argv[]) {
             settings.access |= W_OK;
         if(strcmp(arg, "-type") == 0){
             char c = argv[argind++][0];
-            switch(c){
-                case 'f':
-                    settings.type = 'f';
-                    break;
-                case 'd':
-                    settings.type = 'd';
-                    break;
-            }
+            settings.type = c;
         }
         if(strcmp(arg, "-empty") == 0)
             settings.empty = true;
