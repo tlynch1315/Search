@@ -43,7 +43,9 @@ bool        filter(const char *path, const Settings *settings) {
             if(s.st_size != 0)
                 return true;
         }
-        else return true;
+        else {
+            return true;
+        }
     }
 
     if(settings->access && access(path, settings->access) != 0) return true;

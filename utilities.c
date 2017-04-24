@@ -17,23 +17,22 @@
  */
 bool        is_directory_empty(const char *path) {
     DIR * dir = opendir(path);
-    struct dirent * read;
-    if (dir == NULL) {// cant open
+    if(!dir){
         perror("opendir() error"); // error if cannot open
         return false;
     }
-    while ((read = readdir(dir)) != NULL) {
-        if(read->d_type != DT_DIR){
-            closedir(dir);
-            return false;
-        }
-        else if(strcmp(read->d_name, "." )&& strcmp(read->d_name, "..")){
-            closedir(dir);
-            return false;
-        }
+    struct direct *d;
+    int files = 0;
+    for(d = readdir(dir); d; d = readdir(dir)){
+        files++;
     }
     closedir(dir);
-    return true;
+    if(files <= 2){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 /**
@@ -43,12 +42,9 @@ bool        is_directory_empty(const char *path) {
  */
 time_t      get_mtime(const char *path) {
     struct stat info;
-    int returnVal = lstat(path, &info);
-    if (returnVal == -1) { // error
-        perror("lstat() error");
-        return 0;
-    }
-    return info.st_mtime;
+    if(!lstat(path, &info))
+        return info.st_mtime;
+    else return 0;
 }
 
 

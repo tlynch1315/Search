@@ -55,7 +55,7 @@ int	    main(int argc, char *argv[]) {
         usage(program_name, 1);
 
 
-    while(argind < argc && argc && strlen(argv[argind]) > 1 && argv[argind][0] == '-'){
+    while(argind < argc  && strlen(argv[argind]) > 1 && argv[argind][0] == '-'){
         char *arg = argv[argind++];
         if(strcmp(arg, "-executable") == 0)
             settings.access |= X_OK;
@@ -75,7 +75,7 @@ int	    main(int argc, char *argv[]) {
             }
         }
         if(strcmp(arg, "-empty") == 0)
-            return true;
+            settings.empty = true;
         if(strcmp(arg, "-name") == 0)
             settings.name = argv[argind++];
         if(strcmp(arg, "-path") == 0)
