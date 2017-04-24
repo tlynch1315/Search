@@ -17,22 +17,22 @@
  */
 bool        is_directory_empty(const char *path) {
     DIR * dir = opendir(path);
-    struct dirent * read;
-    int numberFiles = 0;
-    if (dir == NULL) {// cant open
+    if(!dir){
         perror("opendir() error"); // error if cannot open
         return false;
     }
-    while ((read = readdir(dir)) != NULL) {
-        numberFiles++;
-        if (numberFiles > 2) // needs to be 2 since '.' and '..' are files
-            break; // exits once we know its not empty
+    struct direct *d;
+    int files = 0;
+    for(d = readdir(dir); d; d = readdir(dir)){
+        files++;
     }
     closedir(dir);
-    if (numberFiles <= 2) // empty
+    if(files <= 2){
         return true;
-    else
+    }
+    else{
         return false;
+    }
 }
 
 /**
@@ -42,12 +42,9 @@ bool        is_directory_empty(const char *path) {
  */
 time_t      get_mtime(const char *path) {
     struct stat info;
-    int returnVal = lstat(path, &info);
-    if (returnVal == -1) { // error
-        perror("lstat() error");
-        return 0;
-    }
-    return info.st_mtime;
+    if(!lstat(path, &info))
+        return info.st_mtime;
+    else return 0;
 }
 
 
