@@ -18,7 +18,7 @@
  * @param   path        Path to file or directory.
  * @param   settings    Settings structure.
  * @return  Whether or not the path should be excluded from the output (true to
- * exclude, false to include).
+ * exclude, true to include).
  */
 bool        filter(const char *path, const Settings *settings) {
     struct stat s;
@@ -27,9 +27,9 @@ bool        filter(const char *path, const Settings *settings) {
     if(settings->type){     // tests if it is a file
         if(settings->type == 'f' && !S_ISREG(s.st_mode)){
             return true;    // returning 0 for type means it is a file, so if it
-                            // is a file then it will be false
+                            // is a file then it will be true
         }
-        else if(settings->type == 'd' && !S_ISREG(s.st_mode)){
+        else if(settings->type == 'd' && !S_ISDIR(s.st_mode)){
             return true;
         }
     }
@@ -73,7 +73,7 @@ bool        filter(const char *path, const Settings *settings) {
             return true;
         }
     }
-    if(settings->newer && settings->newer >= get_mtime(path))
+    if(settings->newer && settings->newer <= get_mtime(path))
         return true;
 
     if(settings->uid != -1 && s.st_uid != settings->uid)
