@@ -1,11 +1,4 @@
-Project 01 - README
+Search
 ===================
-Search utility that recursively searches a directory and returns files based on provided specifications.
-
-
-Members
--------
-
-- Will Fritz (wfritz@nd.edu)
-- Tommy Lynch (tlynch2)
-
+Reimplementation of find linux command using system calls in C
+Search utility that recursively searches a directory and prints items it finds based on the specified options
